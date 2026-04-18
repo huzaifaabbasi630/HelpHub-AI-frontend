@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
 const Login = () => {
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -11,9 +12,9 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const { data } = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+            const { data } = await axios.post('http://localhost:5000/api/auth/login', { name, email, password });
             localStorage.setItem('userInfo', JSON.stringify(data));
-            navigate('/home');
+            navigate('/onboarding');
         } catch (err) {
             setError(err.response?.data?.message || 'Login failed');
         }
@@ -330,51 +331,48 @@ const Login = () => {
                             <p className="eyebrow">Login / Signup</p>
                             <h2>Authenticate your community profile</h2>
 
-                            <form onSubmit={handleLogin}>
-                                {error && <p className="error-msg">{error}</p>}
+                                <form onSubmit={handleLogin}>
+                                    {error && <p className="error-msg">{error}</p>}
 
-                                <label className="form-label">Select demo user</label>
-                                <select className="form-select">
-                                    <option>Ayesha Khan</option>
-                                    <option>John Doe</option>
-                                </select>
+                                    <label className="form-label">Full Name</label>
+                                    <input
+                                        type="text"
+                                        className="form-input"
+                                        placeholder="Ayesha Khan"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        required
+                                    />
 
-                                <label className="form-label">Role selection</label>
-                                <select className="form-select">
-                                    <option>Both</option>
-                                    <option>Need Help</option>
-                                    <option>Can Help</option>
-                                </select>
-
-                                <div className="form-row">
-                                    <div>
-                                        <label className="form-label">Email</label>
-                                        <input
-                                            type="email"
-                                            className="form-input"
-                                            placeholder="community@helphub.ai"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            required
-                                        />
+                                    <div className="form-row">
+                                        <div>
+                                            <label className="form-label">Email Address</label>
+                                            <input
+                                                type="email"
+                                                className="form-input"
+                                                placeholder="community@helphub.ai"
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
+                                                required
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="form-label">Password</label>
+                                            <input
+                                                type="password"
+                                                className="form-input"
+                                                placeholder="••••••••"
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                required
+                                            />
+                                        </div>
                                     </div>
-                                    <div>
-                                        <label className="form-label">Password</label>
-                                        <input
-                                            type="password"
-                                            className="form-input"
-                                            placeholder="••••••••"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            required
-                                        />
-                                    </div>
-                                </div>
 
-                                <button type="submit" className="btn-submit">
-                                    Continue to dashboard
-                                </button>
-                            </form>
+                                    <button type="submit" className="btn-submit">
+                                        Continue to Onboarding
+                                    </button>
+                                </form>
 
                             <p className="signup-link">
                                 Don't have an account?{' '}

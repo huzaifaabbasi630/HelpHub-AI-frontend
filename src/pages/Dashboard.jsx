@@ -23,7 +23,12 @@ const Dashboard = () => {
         <div style={{ padding: '3rem 2rem', maxWidth: '1200px', margin: '0 auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
                 <h1 style={{ fontSize: '2.5rem', fontWeight: '800' }}>Welcome, {userInfo?.name}!</h1>
-                <Link to="/create-request" className="btn-primary" style={{ width: 'auto', textDecoration: 'none' }}>Create Request</Link>
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                    {userInfo?.role !== 'Can Help' && (
+                        <Link to="/create-request" className="btn-primary" style={{ textDecoration: 'none' }}>Create Request</Link>
+                    )}
+                    <Link to="/explore" className="btn-primary" style={{ background: '#f3f4f6', color: '#0d2a22', textDecoration: 'none' }}>Explore Requests</Link>
+                </div>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '4rem' }}>

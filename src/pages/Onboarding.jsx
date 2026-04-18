@@ -17,7 +17,8 @@ const Onboarding = () => {
             const interestArray = interests.split(',').map(i => i.trim());
             const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
             const { data } = await axios.post('http://localhost:5000/api/user/suggest-skills', { interests: interestArray }, config);
-            setSuggestedSkills(data);
+            setSuggestedSkills(data.canHelp || []); // Using the canHelp suggestions for main skills list
+            // Optionally store needHelp suggestions too
         } catch (err) {
             console.error(err);
         }
@@ -34,7 +35,7 @@ const Onboarding = () => {
                 skills
             };
             await axios.put('http://localhost:5000/api/user/profile', payload, config);
-            navigate('/dashboard');
+            navigate('/home');
         } catch (err) {
             alert('Update failed');
         }

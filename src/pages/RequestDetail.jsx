@@ -40,14 +40,14 @@ const RequestDetail = () => {
                     </div>
                 </div>
 
-                {/* AI Summary Section */}
+                {/* AI Summary Section (Now using Real Gemini Data) */}
                 <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '1.5rem', padding: '2rem', marginBottom: '2.5rem', position: 'relative' }}>
                     <div style={{ position: 'absolute', top: '-12px', left: '20px', background: '#fff', padding: '2px 10px', display: 'flex', alignItems: 'center', gap: '5px', borderRadius: '20px', border: '1px solid #e2e8f0' }}>
                         <Sparkles size={14} color="#4f46e5" />
-                        <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#4f46e5' }}>AI SUMMARY</span>
+                        <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#4f46e5' }}>AI SUMMARY (GEMINI)</span>
                     </div>
                     <p style={{ fontStyle: 'italic', color: '#475569', lineHeight: '1.6' }}>
-                        "This user is experiencing a difficulty in **{request.category}**. They need assistance with {request.title.toLowerCase()}. The urgency is marked as {request.urgency.toLowerCase()}."
+                        {request.aiSummary || "Analysing request context..."}
                     </p>
                 </div>
 
