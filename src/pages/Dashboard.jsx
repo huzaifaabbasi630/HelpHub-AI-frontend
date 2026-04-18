@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
+import API from '../api/apiConfig';
 
 const Dashboard = () => {
     const [stats, setStats] = useState({ total: 0, solved: 0, contributions: 0 });
@@ -9,8 +9,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-                const { data } = await axios.get('http://localhost:5000/api/requests/stats', config);
+                const { data } = await API.get('/api/requests/stats');
                 setStats(data);
             } catch (err) {
                 console.error(err);

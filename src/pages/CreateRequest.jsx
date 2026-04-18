@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import API from '../api/apiConfig';
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -300,19 +300,14 @@ const CreateRequest = () => {
     );
   };
 
-  const handleSubmit = async () => {
-    try {
-      const config = { headers: { Authorization: `Bearer ${userInfo?.token}` } };
-      await axios.post(
-        'http://localhost:5000/api/requests',
-        { title, description, urgency, tags, category },
-        config
-      );
-      navigate('/explore');
-    } catch (err) {
-      alert('Failed to create request');
-    }
-  };
+    const handleSubmit = async () => {
+        try {
+            await API.post('/api/requests', { title, description, urgency, tags, category });
+            navigate('/explore');
+        } catch (err) {
+            alert('Failed to create request');
+        }
+    };
 
   return (
     <>

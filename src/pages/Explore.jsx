@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import API from '../api/apiConfig';
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -245,27 +245,46 @@ const SAMPLE_REQUESTS = [
 ];
 
 const Explore = () => {
-  const [requests, setRequests] = useState(SAMPLE_REQUESTS);
-  const [category, setCategory] = useState('');
-  const [urgency, setUrgency] = useState('');
-  const [skills, setSkills] = useState('');
-  const [location, setLocation] = useState('');
-  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+    const [requests, setRequests] = useState([]);
+    const [category, setCategory] = useState('');
+    const [urgency, setUrgency] = useState('');
+    const [skills, setSkills] = useState('');
+    const [location, setLocation] = useState('');
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
 
-  useEffect(() => {
-    const fetchRequests = async () => {
-      try {
-        let url = 'http://localhost:5000/api/requests?';
-        if (category) url += `category=${category}&`;
-        if (urgency) url += `urgency=${urgency}&`;
-        const { data } = await axios.get(url);
-        setRequests(data);
-      } catch {
-        // fallback to sample data
-      }
+    useEffect(() => {
+        const fetchRequests = async () => {
+            try {
+                let endpoint = '/api/requests?';
+                if (category) endpoint += `category=${category}&`;
+                if (urgency) endpoint += `urgency=${urgency}&`;
+                const { data } = await API.get(endpoint);
+                setRequests(data);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        fetchRequests();
+    }, [category, urgency]);
+
+    const handleHelp = async (id) => {
+        try {
+            await API.post(`/api/requests/${id}/help`);
+            alert('Help offer sent!');
+        } catch (err) {
+            alert(err.response?.data?.message || 'Failed to offer help');
+        }
     };
-    fetchRequests();
-  }, [category, urgency]);
+
+    const handleSolve = async (id) => {
+        try {
+            await API.put(`/api/requests/${id}/solve`);
+            alert('Request marked as solved!');
+            setRequests(requests.map(r => r._id === id ? { ...r, status: 'solved' } : r));
+        } catch (err) {
+            alert(err.response?.data?.message || 'Failed to resolve');
+        }
+    };
 
   const filtered = requests.filter(r => {
     const catMatch = !category || r.category === category;

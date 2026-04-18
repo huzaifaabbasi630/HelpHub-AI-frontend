@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import API from '../api/apiConfig';
 
 const Signup = () => {
     const [name, setName] = useState('');
@@ -13,7 +13,7 @@ const Signup = () => {
     const handleSignup = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:5000/api/auth/signup', { name, email, password, role });
+            await API.post('/api/auth/signup', { name, email, password, role });
             localStorage.setItem('tempEmail', email);
             navigate('/verify');
         } catch (err) {

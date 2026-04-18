@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import API from '../api/apiConfig';
 
 const Profile = () => {
     const navigate = useNavigate();
@@ -14,7 +14,7 @@ const Profile = () => {
         if (!userInfo) { navigate('/login'); return; }
         const fetchProfile = async () => {
             try {
-                const { data } = await axios.get('http://localhost:5000/api/user/leaderboard');
+                const { data } = await API.get('/api/user/leaderboard');
                 const current = data.find(u => u._id === userInfo._id) || userInfo;
                 setUser(current);
                 setForm({
@@ -40,14 +40,13 @@ const Profile = () => {
         e.preventDefault();
         setSaving(true);
         try {
-            const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
             const payload = {
                 name: form.name,
                 location: form.location,
                 skills: form.skills.split(',').map(s => s.trim()).filter(Boolean),
                 interests: form.interests.split(',').map(s => s.trim()).filter(Boolean),
             };
-            const { data } = await axios.put('http://localhost:5000/api/user/profile', payload, config);
+            const { data } = await API.put('/api/user/profile', payload);
             localStorage.setItem('userInfo', JSON.stringify({ ...userInfo, ...data }));
             setUser(prev => ({ ...prev, ...data }));
             setSaved(true);

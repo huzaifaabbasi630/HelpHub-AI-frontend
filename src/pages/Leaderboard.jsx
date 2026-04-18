@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import API from '../api/apiConfig';
 
 const avatarColors = [
     '#0d2a22', '#e97316', '#3b82f6', '#8b5cf6', '#ec4899', '#0f7b5e',
@@ -33,9 +33,15 @@ const Leaderboard = () => {
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:5000/api/user/leaderboard')
-            .then(({ data }) => setUsers(data.length ? data : FALLBACK))
-            .catch(() => setUsers(FALLBACK));
+        const fetchRankings = async () => {
+            try {
+                const { data } = await API.get('/api/user/leaderboard');
+                setUsers(data);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        fetchRankings();
     }, []);
 
     const ranked = [...users].sort((a, b) => (b.trustScore || 0) - (a.trustScore || 0));

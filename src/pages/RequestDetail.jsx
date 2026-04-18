@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import API from '../api/apiConfig';
 import { Sparkles, CheckCircle, ArrowLeft } from 'lucide-react';
 
 const RequestDetail = () => {
@@ -11,7 +11,7 @@ const RequestDetail = () => {
     useEffect(() => {
         const fetchRequest = async () => {
             try {
-                const { data } = await axios.get(`http://localhost:5000/api/requests/${id}`);
+                const { data } = await API.get(`/api/requests/${id}`);
                 setRequest(data);
             } catch (err) {
                 console.error(err);

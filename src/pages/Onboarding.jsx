@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import API from '../api/apiConfig';
 
 const Onboarding = () => {
     const [role, setRole] = useState('Both');
@@ -10,13 +10,10 @@ const Onboarding = () => {
     const [suggestedSkills, setSuggestedSkills] = useState([]);
     const navigate = useNavigate();
 
-    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-
     const handleSuggestSkills = async () => {
         try {
             const interestArray = interests.split(',').map(i => i.trim());
-            const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-            const { data } = await axios.post('http://localhost:5000/api/user/suggest-skills', { interests: interestArray }, config);
+            const { data } = await API.post('/api/user/suggest-skills', { interests: interestArray });
             setSuggestedSkills(data.canHelp || []); // Using the canHelp suggestions for main skills list
             // Optionally store needHelp suggestions too
         } catch (err) {
@@ -27,14 +24,13 @@ const Onboarding = () => {
     const handleComplete = async (e) => {
         e.preventDefault();
         try {
-            const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
             const payload = {
                 role,
                 location,
                 interests: interests.split(',').map(i => i.trim()),
                 skills
             };
-            await axios.put('http://localhost:5000/api/user/profile', payload, config);
+            await API.put('/api/user/profile', payload);
             navigate('/home');
         } catch (err) {
             alert('Update failed');

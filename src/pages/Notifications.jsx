@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import API from '../api/apiConfig';
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -104,8 +104,7 @@ const Notifications = () => {
     useEffect(() => {
         const fetchNotifs = async () => {
             try {
-                const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-                const { data } = await axios.get('http://localhost:5000/api/notifications', config);
+                const { data } = await API.get('/api/notifications');
                 setNotifs(data);
             } catch (err) {
                 console.error(err);
@@ -113,6 +112,15 @@ const Notifications = () => {
         };
         fetchNotifs();
     }, []);
+
+    const markAsRead = async (id) => {
+        try {
+            await API.put(`/api/notifications/${id}/read`);
+            setNotifs(notifs.map(n => n._id === id ? { ...n, read: true } : n));
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     const markAllRead = async () => {
         try {

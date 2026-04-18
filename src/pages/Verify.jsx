@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import API from '../api/apiConfig';
 
 const Verify = () => {
     const [code, setCode] = useState('');
@@ -11,7 +11,7 @@ const Verify = () => {
     const handleVerify = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:5000/api/auth/verify-email', { email, code });
+            await API.post('/api/auth/verify-email', { email, code });
             alert('Email verified successfully! You can now login.');
             navigate('/login');
         } catch (err) {
