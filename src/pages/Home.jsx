@@ -407,8 +407,11 @@ const Home = () => {
                 </div>
 
                 <div className="nav-right">
-                    <span className="nav-signal">Live community signals</span>
-                    <Link to="/profile" className="btn-join">Join the platform</Link>
+                    <Link to="/notifications" className="nav-signal" style={{ textDecoration: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                        <div style={{ width: 8, height: 8, background: '#ef4444', borderRadius: '50%' }}></div>
+                        Live community signals
+                    </Link>
+                    <Link to="/login" className="btn-join">Join the platform</Link>
                 </div>
             </nav>
 
@@ -422,7 +425,7 @@ const Home = () => {
                         HelpHub AI is a community-powered support network for students, mentors, creators, and builders. Ask for help, offer help, track impact, and let AI surface smarter matches across the platform.
                     </p>
                     <div className="btn-group">
-                        <Link to="/explore" className="btn-teal">Open product demo</Link>
+                        <Link to="/dashboard" className="btn-teal">Open product demo</Link>
                         <Link to="/create-request" className="btn-outline">Post a request</Link>
                     </div>
                     <div className="stats-row">
@@ -472,7 +475,7 @@ const Home = () => {
                         <p className="section-eyebrow">Core Flow</p>
                         <h2 className="section-title">From struggling alone to solving together</h2>
                     </div>
-                    <Link to="/explore" className="btn-sm-pill">Try onboarding AI</Link>
+                    <Link to="/onboarding" className="btn-sm-pill">Try onboarding AI</Link>
                 </div>
                 <div className="flow-grid">
                     {[
@@ -517,7 +520,7 @@ const Home = () => {
                                     <p className="req-author">{req.author}</p>
                                     <p className="req-meta">{req.location} • {req.helpers} helper interested</p>
                                 </div>
-                                <button className="btn-open-details">Open details</button>
+                                <Link to={`/request/${req.id}`} className="btn-open-details" style={{ textDecoration: 'none', display: 'inline-block' }}>Open details</Link>
                             </div>
                         </div>
                     ))}

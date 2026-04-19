@@ -1,248 +1,47 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import API from '../api/apiConfig';
 
-const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  .exp-page {
-    min-height: 100vh;
-    background-color: #eee9e0;
-    font-family: 'Inter', sans-serif;
-  }
-
-  /* NAV */
-  .exp-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 2.5rem;
-    height: 60px;
-    background: #eee9e0;
-  }
-  .exp-nav-logo {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    font-weight: 600;
-    font-size: 1rem;
-    color: #1a1a1a;
-    text-decoration: none;
-  }
-  .exp-nav-logo-icon {
-    width: 34px; height: 34px;
-    background: #1a9e8f;
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    color: white; font-weight: 800; font-size: 1rem;
-  }
-  .exp-nav-links {
-    display: flex; align-items: center; gap: 0.5rem;
-  }
-  .exp-nav-link {
-    color: #555; text-decoration: none;
-    font-size: 0.875rem; font-weight: 500;
-    padding: 0.4rem 0.85rem; border-radius: 999px;
-  }
-  .exp-nav-link.active {
-    background: #2a2f2e; color: #fff;
-  }
-
-  /* HERO */
-  .exp-hero {
-    margin: 0 2.5rem 2rem 2.5rem;
-    background: #2a2f2e;
-    border-radius: 18px;
-    padding: 2.8rem 3rem 3rem 3rem;
-    position: relative; overflow: hidden;
-  }
-  .exp-hero::before {
-    content: '';
-    position: absolute; top: -60px; right: -60px;
-    width: 280px; height: 280px;
-    background: radial-gradient(circle, rgba(26,158,143,0.25) 0%, transparent 70%);
-    border-radius: 50%;
-  }
-  .exp-hero-label {
-    font-size: 0.72rem; font-weight: 700;
-    letter-spacing: 0.12em; color: #9aa3a1;
-    text-transform: uppercase; margin-bottom: 0.9rem;
-  }
-  .exp-hero-title {
-    font-size: 2.6rem; font-weight: 800;
-    color: #fff; line-height: 1.15;
-    margin-bottom: 0.9rem; max-width: 680px;
-  }
-  .exp-hero-sub {
-    font-size: 0.92rem; color: #9aa3a1;
-    max-width: 460px; line-height: 1.5;
-  }
-
-  /* LAYOUT */
-  .exp-body {
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 1.5rem;
-    margin: 0 2.5rem 3rem 2.5rem;
-    align-items: start;
-  }
-
-  /* FILTER CARD */
-  .exp-filter-card {
-    background: #fff;
-    border-radius: 16px;
-    padding: 2rem;
-  }
-  .exp-filter-label {
-    font-size: 0.72rem; font-weight: 700;
-    letter-spacing: 0.1em; color: #1a9e8f;
-    text-transform: uppercase; margin-bottom: 0.5rem;
-  }
-  .exp-filter-title {
-    font-size: 1.7rem; font-weight: 800;
-    color: #1a1a1a; margin-bottom: 1.8rem;
-  }
-  .exp-filter-group { margin-bottom: 1.5rem; }
-  .exp-filter-group-label {
-    font-size: 0.85rem; font-weight: 500;
-    color: #333; margin-bottom: 0.5rem;
-    display: block;
-  }
-  .exp-select, .exp-text-input {
-    width: 100%;
-    border: none;
-    border-bottom: 1.5px solid #e0dbd2;
-    border-radius: 0;
-    padding: 0.6rem 0.2rem;
-    font-size: 0.875rem;
-    font-family: 'Inter', sans-serif;
-    color: #444;
-    background: transparent;
-    outline: none;
-    transition: border-color 0.2s;
-    margin-bottom: 0.2rem;
-  }
-  .exp-select {
-    appearance: none;
-    -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.2rem center;
-    cursor: pointer;
-  }
-  .exp-select:focus, .exp-text-input:focus {
-    border-color: #1a9e8f;
-  }
-  .exp-text-input::placeholder { color: #bbb; }
-
-  /* REQUEST CARDS */
-  .exp-feed { display: flex; flex-direction: column; gap: 1.2rem; }
-
-  .exp-req-card {
-    background: #fff;
-    border-radius: 16px;
-    padding: 1.6rem 1.8rem;
-  }
-  .exp-req-tags {
-    display: flex; gap: 0.5rem;
-    flex-wrap: wrap; margin-bottom: 0.8rem;
-  }
-  .exp-tag {
-    font-size: 0.78rem; font-weight: 500;
-    padding: 0.28rem 0.75rem;
-    border-radius: 999px;
-    border: 1.5px solid #d6d0c8;
-    color: #444; background: transparent;
-  }
-  .exp-tag.urgency-high { border-color: #f87171; color: #dc2626; }
-  .exp-tag.urgency-medium { border-color: #fb923c; color: #ea580c; }
-  .exp-tag.urgency-low { border-color: #4ade80; color: #16a34a; }
-  .exp-tag.status-solved { border-color: #4ade80; color: #16a34a; }
-  .exp-tag.status-open { border-color: #93c5fd; color: #2563eb; }
-
-  .exp-req-title {
-    font-size: 1.05rem; font-weight: 700;
-    color: #1a1a1a; margin-bottom: 0.5rem;
-  }
-  .exp-req-desc {
-    font-size: 0.875rem; color: #666;
-    line-height: 1.5; margin-bottom: 0.9rem;
-  }
-  .exp-req-skill-tags {
-    display: flex; gap: 0.5rem;
-    flex-wrap: wrap; margin-bottom: 1.1rem;
-  }
-  .exp-skill-tag {
-    font-size: 0.78rem; font-weight: 500;
-    padding: 0.28rem 0.75rem;
-    border-radius: 999px;
-    border: 1.5px solid #d6d0c8;
-    color: #555; background: transparent;
-  }
-  .exp-req-footer {
-    display: flex; align-items: center;
-    justify-content: space-between;
-  }
-  .exp-req-author { font-size: 0.875rem; font-weight: 600; color: #1a1a1a; margin-bottom: 0.15rem; }
-  .exp-req-meta { font-size: 0.8rem; color: #999; }
-  .exp-open-btn {
-    background: none; border: none;
-    font-size: 0.875rem; font-weight: 600;
-    color: #1a1a1a; cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    text-decoration: none;
-    white-space: nowrap;
-  }
-  .exp-open-btn:hover { color: #1a9e8f; }
-`;
-
 const SAMPLE_REQUESTS = [
-  {
-    _id: '1',
-    category: 'Web Development',
-    urgency: 'High',
-    status: 'solved',
-    title: 'Need help',
-    description: 'helpn needed',
-    tags: [],
-    createdBy: { name: 'Ayesha Khan', location: 'Karachi' },
-    helpers: 1,
-  },
-  {
-    _id: '2',
-    category: 'Web Development',
-    urgency: 'High',
-    status: 'solved',
-    title: 'Need help making my portfolio responsive before demo day',
-    description: 'My HTML/CSS portfolio breaks on tablets and I need layout guidance before tomorrow evening.',
-    tags: ['HTML/CSS', 'Responsive', 'Portfolio'],
-    createdBy: { name: 'Sara Noor', location: 'Karachi' },
-    helpers: 1,
-  },
-  {
-    _id: '3',
-    category: 'Design',
-    urgency: 'Medium',
-    status: 'open',
-    title: 'Looking for Figma feedback on a volunteer event poster',
-    description: 'I have a draft poster for a campus community event and want sharper hierarchy, spacing, and CTA copy.',
-    tags: ['Figma', 'Poster', 'Design Review'],
-    createdBy: { name: 'Ayesha Khan', location: 'Lahore' },
-    helpers: 1,
-  },
-  {
-    _id: '4',
-    category: 'Career',
-    urgency: 'Low',
-    status: 'solved',
-    title: 'Need mock interview support for internship applications',
-    description: 'Applying to frontend internships and need someone to practice behavioral and technical interview questions with me.',
-    tags: ['Interview Prep', 'Career', 'Frontend'],
-    createdBy: { name: 'Sara Noor', location: 'Remote' },
-    helpers: 2,
-  },
+    {
+        _id: '1', category: 'Web Development', urgency: 'High', status: 'solved',
+        title: 'Need help', description: 'helpn needed', tags: [],
+        createdBy: { name: 'Ayesha Khan', location: 'Karachi' }, helpers: 1,
+    },
+    {
+        _id: '2', category: 'Web Development', urgency: 'High', status: 'solved',
+        title: 'Need help making my portfolio responsive before demo day',
+        description: 'My HTML/CSS portfolio breaks on tablets and I need layout guidance before tomorrow evening.',
+        tags: ['HTML/CSS', 'Responsive', 'Portfolio'],
+        createdBy: { name: 'Sara Noor', location: 'Karachi' }, helpers: 1,
+    },
+    {
+        _id: '3', category: 'Design', urgency: 'Medium', status: 'open',
+        title: 'Looking for Figma feedback on a volunteer event poster',
+        description: 'I have a draft poster for a campus community event and want sharper hierarchy, spacing, and CTA copy.',
+        tags: ['Figma', 'Poster', 'Design Review'],
+        createdBy: { name: 'Ayesha Khan', location: 'Lahore' }, helpers: 1,
+    },
+    {
+        _id: '4', category: 'Career', urgency: 'Low', status: 'solved',
+        title: 'Need mock interview support for internship applications',
+        description: 'Applying to frontend internships and need someone to practice behavioral and technical interview questions with me.',
+        tags: ['Interview Prep', 'Career', 'Frontend'],
+        createdBy: { name: 'Sara Noor', location: 'Remote' }, helpers: 2,
+    },
 ];
+
+const urgencyTag = (u) => {
+    if (u === 'High') return { border: '1.5px solid #f87171', color: '#dc2626', background: 'transparent' };
+    if (u === 'Medium') return { border: '1.5px solid #fb923c', color: '#ea580c', background: 'transparent' };
+    return { border: '1.5px solid #4ade80', color: '#16a34a', background: 'transparent' };
+};
+const statusTag = (s) =>
+    s === 'solved'
+        ? { border: '1.5px solid #4ade80', color: '#16a34a', background: 'transparent' }
+        : { border: '1.5px solid #93c5fd', color: '#2563eb', background: 'transparent' };
+
+const categoryTag = { border: '1.5px solid #d6d0c8', color: '#444', background: 'transparent' };
 
 const Explore = () => {
     const [requests, setRequests] = useState([]);
@@ -259,9 +58,9 @@ const Explore = () => {
                 if (category) endpoint += `category=${category}&`;
                 if (urgency) endpoint += `urgency=${urgency}&`;
                 const { data } = await API.get(endpoint);
-                setRequests(data);
-            } catch (err) {
-                console.error(err);
+                setRequests(data.length ? data : SAMPLE_REQUESTS);
+            } catch {
+                setRequests(SAMPLE_REQUESTS);
             }
         };
         fetchRequests();
@@ -286,146 +85,303 @@ const Explore = () => {
         }
     };
 
-  const filtered = requests.filter(r => {
-    const catMatch = !category || r.category === category;
-    const urgMatch = !urgency || r.urgency === urgency;
-    const locMatch = !location || r.createdBy?.location?.toLowerCase().includes(location.toLowerCase());
-    return catMatch && urgMatch && locMatch;
-  });
+    const filtered = requests.filter(r => {
+        const catMatch = !category || r.category === category;
+        const urgMatch = !urgency || r.urgency === urgency;
+        const locMatch = !location || r.createdBy?.location?.toLowerCase().includes(location.toLowerCase());
+        const skillMatch = !skills || (r.tags || []).some(t => t.toLowerCase().includes(skills.toLowerCase()));
+        return catMatch && urgMatch && locMatch && (skills ? skillMatch : true);
+    });
 
-  const urgencyClass = (u) => {
-    if (u === 'High') return 'exp-tag urgency-high';
-    if (u === 'Medium') return 'exp-tag urgency-medium';
-    return 'exp-tag urgency-low';
-  };
-  const statusClass = (s) =>
-    s === 'solved' ? 'exp-tag status-solved' : 'exp-tag status-open';
+    return (
+        <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg,#e0f0e8 0%,#f5f0e8 45%,#fce8d8 100%)', fontFamily: "'Segoe UI', sans-serif" }}>
+            <style>{`
+                * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  return (
-    <>
-      <style>{styles}</style>
-      <div className="exp-page">
+                /* Navbar */
+                .exp-nav {
+                    display: flex; align-items: center;
+                    justify-content: space-between;
+                    padding: 1rem 2.5rem;
+                }
+                .exp-brand {
+                    display: flex; align-items: center; gap: 10px;
+                    text-decoration: none;
+                }
+                .exp-brand-icon {
+                    width: 36px; height: 36px; background: #0f7b5e;
+                    border-radius: 8px; display: flex; align-items: center;
+                    justify-content: center; color: white; font-weight: 800;
+                }
+                .exp-nav-links { display: flex; gap: 0.3rem; }
+                .exp-nav-links a {
+                    text-decoration: none; color: #555;
+                    font-size: 0.88rem; font-weight: 500;
+                    padding: 0.45rem 1rem; border-radius: 2rem;
+                    transition: background 0.2s;
+                }
+                .exp-nav-links a:hover { color: #0f7b5e; }
+                .exp-nav-links a.active {
+                    background: #0d2a22; color: white; font-weight: 700;
+                }
 
-        {/* NAV */}
-        <nav className="exp-nav">
-          <a href="/" className="exp-nav-logo">
-            <div className="exp-nav-logo-icon">H</div>
-            HelpHub AI
-          </a>
-          <div className="exp-nav-links">
-            <a href="/dashboard" className="exp-nav-link">Dashboard</a>
-            <a href="/explore" className="exp-nav-link active">Explore</a>
-            <a href="/leaderboard" className="exp-nav-link">Leaderboard</a>
-            <a href="/notifications" className="exp-nav-link">Notifications</a>
-          </div>
-        </nav>
+                /* Hero */
+                .exp-hero {
+                    background: #0d2a22; border-radius: 1.4rem;
+                    margin: 0.5rem 2.5rem 1.5rem;
+                    padding: 2.8rem 3rem; color: white; position: relative; overflow: hidden;
+                }
+                .exp-hero::before {
+                    content: ''; position: absolute;
+                    top: -60px; right: -60px;
+                    width: 260px; height: 260px;
+                    background: radial-gradient(circle, rgba(15,123,94,0.3) 0%, transparent 70%);
+                    border-radius: 50%;
+                }
+                .exp-hero-eyebrow {
+                    font-size: 0.68rem; font-weight: 800;
+                    letter-spacing: 2.5px; opacity: 0.55;
+                    text-transform: uppercase; margin-bottom: 0.9rem;
+                }
+                .exp-hero-title {
+                    font-size: 2.8rem; font-weight: 900;
+                    line-height: 1.08; letter-spacing: -0.5px;
+                    margin-bottom: 0.8rem; max-width: 680px;
+                }
+                .exp-hero-sub { font-size: 0.9rem; opacity: 0.6; max-width: 460px; line-height: 1.5; }
 
-        {/* HERO */}
-        <div className="exp-hero">
-          <p className="exp-hero-label">Explore / Feed</p>
-          <h1 className="exp-hero-title">Browse help requests with filterable community context.</h1>
-          <p className="exp-hero-sub">Filter by category, urgency, skills, and location to surface the best matches.</p>
-        </div>
+                /* Body layout */
+                .exp-body {
+                    display: grid;
+                    grid-template-columns: 280px 1fr;
+                    gap: 1.2rem;
+                    margin: 0 2.5rem 3rem;
+                    align-items: start;
+                }
 
-        {/* BODY */}
-        <div className="exp-body">
+                /* Filter card */
+                .exp-filter-card {
+                    background: #fcfaf2; border-radius: 1.4rem;
+                    padding: 2rem;
+                }
+                .filter-eyebrow {
+                    font-size: 0.65rem; font-weight: 800;
+                    letter-spacing: 2px; color: #0f7b5e;
+                    text-transform: uppercase; margin-bottom: 0.5rem;
+                }
+                .filter-title {
+                    font-size: 1.8rem; font-weight: 900;
+                    color: #0d2a22; letter-spacing: -0.5px;
+                    margin-bottom: 2rem;
+                }
+                .filter-group { margin-bottom: 1.8rem; }
+                .filter-group-label {
+                    font-size: 0.82rem; font-weight: 600;
+                    color: #374151; margin-bottom: 0.6rem; display: block;
+                }
+                .filter-select, .filter-input {
+                    width: 100%;
+                    border: none;
+                    border-bottom: 1.5px solid #d6d0c4;
+                    padding: 0.55rem 0.2rem;
+                    font-size: 0.875rem;
+                    color: #444;
+                    background: transparent;
+                    outline: none;
+                    transition: border-color 0.2s;
+                    font-family: inherit;
+                }
+                .filter-select {
+                    appearance: none; -webkit-appearance: none;
+                    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+                    background-repeat: no-repeat;
+                    background-position: right 0.2rem center;
+                    cursor: pointer;
+                }
+                .filter-select:focus, .filter-input:focus { border-color: #0f7b5e; }
+                .filter-input::placeholder { color: #bbb; }
 
-          {/* FILTER SIDEBAR */}
-          <div className="exp-filter-card">
-            <p className="exp-filter-label">Filters</p>
-            <h2 className="exp-filter-title">Refine the feed</h2>
+                /* Feed */
+                .exp-feed { display: flex; flex-direction: column; gap: 1rem; }
 
-            <div className="exp-filter-group">
-              <label className="exp-filter-group-label">Category</label>
-              <select className="exp-select" value={category} onChange={e => setCategory(e.target.value)}>
-                <option value="">All categories</option>
-                <option value="Web Development">Web Development</option>
-                <option value="Design">Design</option>
-                <option value="Career">Career</option>
-                <option value="Programming">Programming</option>
-                <option value="General">General</option>
-              </select>
+                .exp-card {
+                    background: #fcfaf2; border-radius: 1.4rem;
+                    padding: 1.6rem 1.8rem;
+                }
+                .exp-card-tags {
+                    display: flex; gap: 0.5rem;
+                    flex-wrap: wrap; margin-bottom: 0.8rem;
+                }
+                .exp-pill {
+                    font-size: 0.78rem; font-weight: 600;
+                    padding: 0.28rem 0.85rem;
+                    border-radius: 999px;
+                }
+                .exp-card-title {
+                    font-size: 1rem; font-weight: 800;
+                    color: #0d2a22; margin-bottom: 0.45rem;
+                }
+                .exp-card-desc {
+                    font-size: 0.85rem; color: #6b7280;
+                    line-height: 1.55; margin-bottom: 0.85rem;
+                }
+                .exp-skill-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+                .exp-skill-pill {
+                    font-size: 0.76rem; font-weight: 500;
+                    padding: 0.25rem 0.75rem;
+                    border-radius: 999px;
+                    border: 1.5px solid #d6d0c8;
+                    color: #555;
+                }
+                .exp-card-footer {
+                    display: flex; align-items: center;
+                    justify-content: space-between;
+                    padding-top: 0.9rem;
+                    border-top: 1px solid #f0ede4;
+                }
+                .exp-author { font-size: 0.875rem; font-weight: 700; color: #0d2a22; }
+                .exp-meta { font-size: 0.78rem; color: #9ca3af; margin-top: 2px; }
+                .exp-action-btn {
+                    background: none; border: none;
+                    font-size: 0.875rem; font-weight: 700;
+                    color: #0d2a22; cursor: pointer;
+                    font-family: inherit;
+                    transition: color 0.2s;
+                }
+                .exp-action-btn:hover { color: #0f7b5e; }
+
+                @media (max-width: 800px) {
+                    .exp-body { grid-template-columns: 1fr; }
+                    .exp-hero-title { font-size: 2rem; }
+                    .exp-nav, .exp-hero, .exp-body { margin-left: 1rem; margin-right: 1rem; }
+                    .exp-hero { padding: 2rem; }
+                }
+            `}</style>
+
+            {/* Navbar */}
+            <nav className="exp-nav">
+                <Link to="/home" className="exp-brand">
+                    <div className="exp-brand-icon">H</div>
+                    <span style={{ fontWeight: 800, color: '#0d2a22', fontSize: '1.05rem' }}>HelpHub AI</span>
+                </Link>
+                <div className="exp-nav-links">
+                    <Link to="/dashboard">Dashboard</Link>
+                    <Link to="/explore" className="active">Explore</Link>
+                    <Link to="/leaderboard">Leaderboard</Link>
+                    <Link to="/notifications">Notifications</Link>
+                </div>
+            </nav>
+
+            {/* Hero */}
+            <div className="exp-hero">
+                <p className="exp-hero-eyebrow">Explore / Feed</p>
+                <h1 className="exp-hero-title">Browse help requests with filterable community context.</h1>
+                <p className="exp-hero-sub">Filter by category, urgency, skills, and location to surface the best matches.</p>
             </div>
 
-            <div className="exp-filter-group">
-              <label className="exp-filter-group-label">Urgency</label>
-              <select className="exp-select" value={urgency} onChange={e => setUrgency(e.target.value)}>
-                <option value="">All urgency levels</option>
-                <option value="Low">Low</option>
-                <option value="Medium">Medium</option>
-                <option value="High">High</option>
-              </select>
-            </div>
+            {/* Body */}
+            <div className="exp-body">
 
-            <div className="exp-filter-group">
-              <label className="exp-filter-group-label">Skills</label>
-              <input
-                className="exp-text-input"
-                placeholder="React, Figma, Git/GitHub"
-                value={skills}
-                onChange={e => setSkills(e.target.value)}
-              />
-            </div>
+                {/* Filter Sidebar */}
+                <div className="exp-filter-card">
+                    <p className="filter-eyebrow">Filters</p>
+                    <h2 className="filter-title">Refine the feed</h2>
 
-            <div className="exp-filter-group">
-              <label className="exp-filter-group-label">Location</label>
-              <input
-                className="exp-text-input"
-                placeholder="Karachi, Lahore, Remote"
-                value={location}
-                onChange={e => setLocation(e.target.value)}
-              />
-            </div>
-          </div>
+                    <div className="filter-group">
+                        <label className="filter-group-label">Category</label>
+                        <select className="filter-select" value={category} onChange={e => setCategory(e.target.value)}>
+                            <option value="">All categories</option>
+                            <option value="Web Development">Web Development</option>
+                            <option value="Design">Design</option>
+                            <option value="Career">Career</option>
+                            <option value="Programming">Programming</option>
+                            <option value="General">General</option>
+                        </select>
+                    </div>
 
-          {/* FEED */}
-          <div className="exp-feed">
-            {filtered.map(req => (
-              <div className="exp-req-card" key={req._id}>
-                <div className="exp-req-tags">
-                  <span className="exp-tag">{req.category}</span>
-                  <span className={urgencyClass(req.urgency)}>{req.urgency}</span>
-                  <span className={statusClass(req.status)}>
-                    {req.status === 'solved' ? 'Solved' : 'Open'}
-                  </span>
+                    <div className="filter-group">
+                        <label className="filter-group-label">Urgency</label>
+                        <select className="filter-select" value={urgency} onChange={e => setUrgency(e.target.value)}>
+                            <option value="">All urgency levels</option>
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+
+                    <div className="filter-group">
+                        <label className="filter-group-label">Skills</label>
+                        <input
+                            className="filter-input"
+                            placeholder="React, Figma, Git/GitHub"
+                            value={skills}
+                            onChange={e => setSkills(e.target.value)}
+                        />
+                    </div>
+
+                    <div className="filter-group">
+                        <label className="filter-group-label">Location</label>
+                        <input
+                            className="filter-input"
+                            placeholder="Karachi, Lahore, Remote"
+                            value={location}
+                            onChange={e => setLocation(e.target.value)}
+                        />
+                    </div>
                 </div>
 
-                <h3 className="exp-req-title">{req.title}</h3>
-                <p className="exp-req-desc">{req.description}</p>
+                {/* Feed */}
+                <div className="exp-feed">
+                    {filtered.length === 0 && (
+                        <div style={{ padding: '2rem', textAlign: 'center', color: '#9ca3af', background: '#fcfaf2', borderRadius: '1.4rem' }}>
+                            No requests match your filters.
+                        </div>
+                    )}
+                    {filtered.map(req => (
+                        <div className="exp-card" key={req._id}>
+                            <div className="exp-card-tags">
+                                <span className="exp-pill" style={categoryTag}>{req.category}</span>
+                                <span className="exp-pill" style={urgencyTag(req.urgency)}>{req.urgency}</span>
+                                <span className="exp-pill" style={statusTag(req.status)}>
+                                    {req.status === 'solved' ? 'Solved' : 'Open'}
+                                </span>
+                            </div>
 
-                {req.tags?.length > 0 && (
-                  <div className="exp-req-skill-tags">
-                    {req.tags.map(t => (
-                      <span className="exp-skill-tag" key={t}>{t}</span>
+                            <h3 className="exp-card-title">{req.title}</h3>
+                            <p className="exp-card-desc">{req.description}</p>
+
+                            {req.tags?.length > 0 && (
+                                <div className="exp-skill-tags">
+                                    {req.tags.map(t => (
+                                        <span className="exp-skill-pill" key={t}>{t}</span>
+                                    ))}
+                                </div>
+                            )}
+
+                            <div className="exp-card-footer">
+                                <div>
+                                    <p className="exp-author">{req.createdBy?.name}</p>
+                                    <p className="exp-meta">
+                                        {req.createdBy?.location} • {req.helpers || 0} helper{req.helpers !== 1 ? 's' : ''} interested
+                                    </p>
+                                </div>
+                                {req.status === 'solved' ? (
+                                    <button className="exp-action-btn" disabled style={{ color: '#9ca3af' }}>Solved</button>
+                                ) : req.createdBy?._id === userInfo?._id ? (
+                                    <button className="exp-action-btn" onClick={() => handleSolve(req._id)}>Mark as Solved</button>
+                                ) : userInfo?.role !== 'Need Help' ? (
+                                    <button className="exp-action-btn" onClick={() => handleHelp(req._id)}>I can help</button>
+                                ) : (
+                                    <button className="exp-action-btn" style={{ color: '#9ca3af' }} disabled>View Only</button>
+                                )}
+                            </div>
+                        </div>
                     ))}
-                  </div>
-                )}
-
-                <div className="exp-req-footer">
-                  <div>
-                    <p className="exp-req-author">{req.createdBy?.name}</p>
-                    <p className="exp-req-meta">
-                      {req.createdBy?.location} • {req.helpers || 0} helper{req.helpers !== 1 ? 's' : ''} interested
-                    </p>
-                  </div>
-                  {req.status === 'solved' ? (
-                    <button className="exp-open-btn" disabled style={{ color: '#6b7280' }}>Solved</button>
-                  ) : req.createdBy?._id === userInfo?._id ? (
-                    <button className="exp-open-btn" onClick={() => handleSolve(req._id)}>Mark as Solved</button>
-                  ) : userInfo?.role !== 'Need Help' ? (
-                    <button className="exp-open-btn" onClick={() => handleHelp(req._id)}>I can help</button>
-                  ) : (
-                    <button className="exp-open-btn" disabled style={{ color: '#6b7280', opacity: 0.5 }}>View Only</button>
-                  )}
                 </div>
-              </div>
-            ))}
-          </div>
 
+            </div>
         </div>
-      </div>
-    </>
-  );
+    );
 };
 
 export default Explore;
