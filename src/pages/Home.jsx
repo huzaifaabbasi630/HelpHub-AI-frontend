@@ -118,7 +118,10 @@ const Home = () => {
                 </div>
 
                 <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-                    <span style={{ fontSize: '0.8rem', color: '#666' }}>Live community signals</span>
+                    <Link to="/notifications" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div style={{ width: 8, height: 8, background: '#ef4444', borderRadius: '50%', boxShadow: '0 0 8px #ef4444' }}></div>
+                        <span style={{ fontSize: '0.8rem', color: '#666', fontWeight: '600' }}>Live community signals</span>
+                    </Link>
                     <Link to="/login" style={{ background: '#14b8a6', color: 'white', padding: '10px 22px', borderRadius: '30px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem' }}>Join the platform</Link>
                 </div>
             </nav>
@@ -165,6 +168,29 @@ const Home = () => {
                             <p style={{ fontSize: '0.8rem', opacity: 0.5 }}>Top trust score active across the network.</p>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            {/* Core Flow Section */}
+            <div style={{ maxWidth: '1300px', margin: '3rem auto 0', padding: '4rem 2rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2rem' }}>
+                    <div>
+                        <p style={{ color: '#10b981', fontWeight: '800', fontSize: '0.7rem', marginBottom: '0.5rem' }}>CORE FLOW</p>
+                        <h2 style={{ fontSize: '2.5rem', fontWeight: '900', color: '#0d2a22' }}>From struggling alone to solving together</h2>
+                    </div>
+                    <Link to="/onboarding" style={{ padding: '10px 20px', borderRadius: '30px', background: 'white', border: '1px solid #ddd', textDecoration: 'none', color: '#0d2a22', fontWeight: 'bold' }}>Try onboarding AI</Link>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
+                    {[
+                        { title: 'Ask for help clearly', desc: 'Create structured requests with category, urgency, AI suggestions, and tags that attract the right people.' },
+                        { title: 'Discover the right people', desc: 'Use the explore feed, helper lists, notifications, and messaging to move quickly once a match happens.' },
+                        { title: 'Track real contribution', desc: 'Trust scores, badges, solved requests, and rankings help the community recognize meaningful support.' },
+                    ].map(f => (
+                        <div key={f.title} style={{ background: 'white', padding: '2rem', borderRadius: '24px', border: '1px solid #eee' }}>
+                            <h4 style={{ fontSize: '1.1rem', fontWeight: '800', marginBottom: '1rem', color: '#0d2a22' }}>{f.title}</h4>
+                            <p style={{ color: '#666', fontSize: '0.9rem', lineHeight: '1.6' }}>{f.desc}</p>
+                        </div>
+                    ))}
                 </div>
             </div>
 
