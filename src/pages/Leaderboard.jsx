@@ -23,12 +23,6 @@ const TrustBar = ({ score }) => {
     );
 };
 
-const FALLBACK = [
-    { _id: '1', name: 'Ayesha Khan',  trustScore: 100, contributions: 35, skills: ['Figma','UI/UX','HTML/CSS'], badges: ['Design Ally','Fast Responder','Top Mentor'] },
-    { _id: '2', name: 'Hassan Ali',   trustScore: 88,  contributions: 24, skills: ['JavaScript','React','Git/GitHub'], badges: ['Code Rescuer','Bug Hunter'] },
-    { _id: '3', name: 'Sara Noor',    trustScore: 74,  contributions: 11, skills: ['Python','Data Analysis'], badges: ['Community Voice'] },
-];
-
 const Leaderboard = () => {
     const [users, setUsers] = useState([]);
 
@@ -38,7 +32,13 @@ const Leaderboard = () => {
                 const { data } = await API.get('/api/user/leaderboard');
                 setUsers(data);
             } catch (err) {
-                console.error(err);
+                console.error("Error fetching leaderboard:", err);
+                // Fallback data agar API fail ho jaye
+                setUsers([
+                    { _id: '1', name: 'Ayesha Khan', trustScore: 95, contributions: 32, skills: ['Figma', 'UI/UX', 'HTML/CSS'], badges: ['Design Ally', 'Fast Responder', 'Top Mentor'] },
+                    { _id: '2', name: 'Hassan Ali', trustScore: 88, contributions: 24, skills: ['JavaScript', 'React', 'Git/GitHub'], badges: ['Code Rescuer', 'Bug Hunter'] },
+                    { _id: '3', name: 'Sara Noor', trustScore: 74, contributions: 11, skills: ['Python', 'Data Analysis'], badges: ['Community Voice'] },
+                ]);
             }
         };
         fetchRankings();
@@ -55,7 +55,7 @@ const Leaderboard = () => {
                 .lb-nav {
                     display: flex; align-items: center;
                     justify-content: space-between;
-                    padding: 1rem 2.5rem;
+                    padding: 1.2rem 2.5rem;
                 }
                 .nav-brand {
                     display: flex; align-items: center; gap: 10px;
@@ -66,132 +66,137 @@ const Leaderboard = () => {
                     border-radius: 8px; display: flex; align-items: center;
                     justify-content: center; color: white; font-weight: 800;
                 }
-                .nav-links { display: flex; gap: 0.4rem; list-style: none; }
+                .nav-links { display: flex; gap: 0.5rem; list-style: none; align-items: center; }
                 .nav-links a {
                     text-decoration: none; color: #555; font-size: 0.9rem;
-                    font-weight: 500; padding: 0.45rem 1rem; border-radius: 2rem;
-                    transition: background 0.2s;
+                    font-weight: 500; padding: 0.5rem 1.2rem; border-radius: 2rem;
+                    transition: all 0.2s ease;
                 }
-                .nav-links a:hover { color: #0f7b5e; }
+                .nav-links a:hover { color: #0f7b5e; background: rgba(15, 123, 94, 0.05); }
                 .nav-links a.active {
                     background: #e8f5f0; color: #0d6a50; font-weight: 700;
                 }
 
-                /* Hero */
+                /* Hero Section */
                 .hero-banner {
-                    background: #0d2a22; border-radius: 1.4rem;
-                    margin: 0.5rem 2.5rem 1.5rem;
-                    padding: 2.5rem 3rem; color: white;
+                    background: #1a2e2a; border-radius: 1.8rem;
+                    margin: 0.5rem 2.5rem 2rem;
+                    padding: 3.5rem 4rem; color: white;
+                    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
                 }
                 .hero-eyebrow {
-                    font-size: 0.68rem; font-weight: 800;
-                    letter-spacing: 2.5px; opacity: 0.55;
-                    text-transform: uppercase; margin-bottom: 0.9rem;
+                    font-size: 0.7rem; font-weight: 800;
+                    letter-spacing: 2.5px; opacity: 0.6;
+                    text-transform: uppercase; margin-bottom: 1.2rem;
                 }
                 .hero-title {
-                    font-size: 3rem; font-weight: 900;
-                    letter-spacing: -1px; line-height: 1.05;
-                    margin-bottom: 0.8rem; max-width: 800px;
+                    font-size: 3.2rem; font-weight: 800;
+                    letter-spacing: -1.5px; line-height: 1.1;
+                    margin-bottom: 1.2rem; max-width: 750px;
                 }
-                .hero-sub { font-size: 0.9rem; opacity: 0.6; }
+                .hero-sub { font-size: 1rem; opacity: 0.7; line-height: 1.6; max-width: 600px; }
 
-                /* Content Grid */
+                /* Grid Layout */
                 .content-grid {
                     display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 1.2rem;
-                    padding: 0 2.5rem 3rem;
-                    max-width: 1200px;
+                    grid-template-columns: 1.1fr 0.9fr;
+                    gap: 1.5rem;
+                    padding: 0 2.5rem 4rem;
+                    max-width: 1300px;
                     margin: 0 auto;
                 }
 
-                /* Cards */
+                /* Card Styling */
                 .lb-card {
-                    background: #fcfaf2;
-                    border-radius: 1.6rem;
-                    padding: 2.2rem 2.2rem 1.5rem;
-                    display: flex; flex-direction: column;
+                    background: #fdfcf7;
+                    border-radius: 2rem;
+                    padding: 2.5rem;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
                 }
                 .card-eyebrow {
-                    font-size: 0.65rem; font-weight: 800;
-                    letter-spacing: 2px; color: #0f7b5e;
-                    text-transform: uppercase; margin-bottom: 0.5rem;
+                    font-size: 0.7rem; font-weight: 800;
+                    letter-spacing: 1.5px; color: #0f7b5e;
+                    text-transform: uppercase; margin-bottom: 0.6rem;
                 }
                 .card-title {
-                    font-size: 1.9rem; font-weight: 900;
-                    color: #0d2a22; letter-spacing: -0.5px;
-                    margin-bottom: 1.5rem;
+                    font-size: 2.2rem; font-weight: 800;
+                    color: #0d2a22; letter-spacing: -0.8px;
+                    margin-bottom: 2rem;
                 }
 
-                /* Ranking rows */
+                /* List Rows */
                 .rank-row {
                     display: flex; align-items: center;
                     justify-content: space-between;
-                    padding: 1.1rem 0;
-                    border-bottom: 1px solid #f0ede4;
+                    padding: 1.2rem 0;
+                    border-bottom: 1px solid #f0eee6;
                 }
                 .rank-row:last-child { border-bottom: none; }
-                .rank-left { display: flex; align-items: center; gap: 1rem; }
+                .rank-left { display: flex; align-items: center; gap: 1.2rem; }
                 .rank-num {
-                    font-size: 0.85rem; font-weight: 800;
-                    color: #9ca3af; min-width: 28px;
+                    font-size: 0.9rem; font-weight: 800;
+                    color: #9ca3af; min-width: 32px;
                 }
-                .rank-num.top { color: #0d2a22; }
+                .rank-num.top { color: #111; }
                 .avatar {
-                    width: 42px; height: 42px; border-radius: 50%;
+                    width: 48px; height: 48px; border-radius: 50%;
                     display: flex; align-items: center; justify-content: center;
-                    color: white; font-size: 0.85rem; font-weight: 800;
-                    flex-shrink: 0;
+                    color: white; font-size: 0.9rem; font-weight: 800;
+                    flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
                 }
-                .rank-name { font-size: 0.95rem; font-weight: 800; color: #0d2a22; }
-                .rank-skills { font-size: 0.78rem; color: #9ca3af; margin-top: 2px; }
+                .rank-name { font-size: 1rem; font-weight: 800; color: #0d2a22; }
+                .rank-skills { font-size: 0.85rem; color: #6b7280; margin-top: 3px; }
                 .rank-right { text-align: right; }
-                .rank-score { font-size: 1rem; font-weight: 900; color: #0d2a22; }
-                .rank-contrib { font-size: 0.75rem; color: #9ca3af; margin-top: 2px; }
+                .rank-score { font-size: 1.1rem; font-weight: 800; color: #0d2a22; }
+                .rank-contrib { font-size: 0.8rem; color: #9ca3af; margin-top: 3px; }
 
-                /* Badge rows */
-                .badge-row {
+                /* Badge Cards */
+                .badge-box {
                     background: white;
-                    border-radius: 1rem;
-                    padding: 1.2rem 1.4rem;
-                    margin-bottom: 0.8rem;
+                    border-radius: 1.2rem;
+                    padding: 1.5rem;
+                    margin-bottom: 1rem;
+                    border: 1px solid rgba(0,0,0,0.03);
+                    transition: transform 0.2s;
                 }
-                .badge-row:last-child { margin-bottom: 0; }
-                .badge-name { font-size: 0.95rem; font-weight: 800; color: #0d2a22; margin-bottom: 3px; }
-                .badge-tags { font-size: 0.8rem; color: #9ca3af; margin-bottom: 0.7rem; }
+                .badge-box:hover { transform: translateY(-2px); }
+                .badge-user-name { font-size: 1.1rem; font-weight: 800; color: #0d2a22; margin-bottom: 5px; }
+                .badge-list { font-size: 0.85rem; color: #0f7b5e; font-weight: 600; margin-bottom: 1rem; display: block; }
 
-                @media (max-width: 800px) {
+                @media (max-width: 900px) {
                     .content-grid { grid-template-columns: 1fr; }
-                    .hero-title { font-size: 2rem; }
-                    .lb-nav, .hero-banner, .content-grid { padding-left: 1.2rem; padding-right: 1.2rem; }
-                    .hero-banner { margin-left: 1rem; margin-right: 1rem; }
+                    .hero-banner { padding: 2.5rem; margin: 0.5rem 1.2rem; }
+                    .hero-title { font-size: 2.2rem; }
+                    .lb-nav { padding: 1rem 1.5rem; }
+                    .content-grid { padding: 0 1.2rem 3rem; }
                 }
             `}</style>
 
             {/* Navbar */}
             <nav className="lb-nav">
-                <Link to="/home" className="nav-brand">
+                <Link to="/" className="nav-brand">
                     <div className="brand-box">H</div>
-                    <span style={{ fontWeight: 800, color: '#0d2a22', fontSize: '1.05rem' }}>HelpHub AI</span>
+                    <span style={{ fontWeight: 800, color: '#0d2a22', fontSize: '1.1rem' }}>HelpHub AI</span>
                 </Link>
                 <ul className="nav-links">
                     <li><Link to="/dashboard">Dashboard</Link></li>
                     <li><Link to="/explore">Explore</Link></li>
                     <li><Link to="/leaderboard" className="active">Leaderboard</Link></li>
+                    <li><Link to="/notifications">Notifications</Link></li>
                 </ul>
             </nav>
 
-            {/* Hero */}
+            {/* Hero Section */}
             <div className="hero-banner">
                 <p className="hero-eyebrow">Leaderboard</p>
                 <h1 className="hero-title">Recognize the people who keep the community moving.</h1>
-                <p className="hero-sub">Trust score, contribution count, and badges create visible momentum for reliable helpers.</p>
+                <p className="hero-sub">Trust score, contribution count, and badges create visible momentum for our most reliable community helpers.</p>
             </div>
 
-            {/* Two-column content */}
+            {/* Content Grid */}
             <div className="content-grid">
 
-                {/* Left: Rankings */}
+                {/* Left Column: Rankings */}
                 <div className="lb-card">
                     <p className="card-eyebrow">Top Helpers</p>
                     <h2 className="card-title">Rankings</h2>
@@ -211,7 +216,7 @@ const Leaderboard = () => {
                                     <p className="rank-skills">
                                         {Array.isArray(user.skills)
                                             ? user.skills.slice(0, 3).join(', ')
-                                            : (user.skills || user.role || '—')}
+                                            : (user.skills || 'Community Member')}
                                     </p>
                                 </div>
                             </div>
@@ -223,19 +228,19 @@ const Leaderboard = () => {
                     ))}
                 </div>
 
-                {/* Right: Badge System */}
+                {/* Right Column: Badge System */}
                 <div className="lb-card">
                     <p className="card-eyebrow">Badge System</p>
                     <h2 className="card-title">Trust and achievement</h2>
 
-                    {ranked.map((user, i) => (
-                        <div key={user._id} className="badge-row">
-                            <p className="badge-name">{user.name}</p>
-                            <p className="badge-tags">
+                    {ranked.map((user) => (
+                        <div key={user._id} className="badge-box">
+                            <p className="badge-user-name">{user.name}</p>
+                            <span className="badge-list">
                                 {Array.isArray(user.badges) && user.badges.length
                                     ? user.badges.join(' • ')
-                                    : '—'}
-                            </p>
+                                    : 'Rising Star'}
+                            </span>
                             <TrustBar score={user.trustScore ?? 0} />
                         </div>
                     ))}
