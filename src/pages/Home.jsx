@@ -51,7 +51,7 @@ const Home = () => {
     }, [navigate, userInfo]);
 
     return (
-        <div style={{ background: 'linear-gradient(135deg, #e0f0e8 0%, #f5f0e8 45%, #fce8d8 100%)', minHeight: '100vh', fontFamily: "'Segoe UI', sans-serif" }}>
+        <div style={{ background: 'linear-gradient(135deg, #e0f0e8 0%, #f5f0e8 45%, #fce8d8 100%)', minHeight: '100vh', fontFamily: "'Segoe UI', sans-serif", paddingTop: '80px' }}>
             <style>{`
                 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -61,6 +61,14 @@ const Home = () => {
                     justify-content: space-between;
                     align-items: center;
                     padding: 1rem 3rem;
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    z-index: 1000;
+                    background: rgba(224, 240, 232, 0.8);
+                    backdrop-filter: blur(12px);
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
                 }
                 .nav-brand {
                     display: flex;
